@@ -32,15 +32,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install and Build React App
+        working-directory: ./client
+        run: |
+          npm install
+          npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
           enablement: true
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload only the frontend directory
-          path: './frontend'
+          # Upload the built Vite output folder
+          path: './client/dist'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
