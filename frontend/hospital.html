@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.8/dist/web3.js"></script>
+    <script src="web3-config.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Cyber Medical System</h1>
+    </header>
+
+    <nav>
+        <a href="hospital.html">Hospital Registration</a>
+        <a href="doctor.html">Doctor Registration</a>
+        <a href="patient.html">Patient Registration</a>
+        <a href="patient_details.html">View Patient Details</a>
+        <a href="record_details.html">View Medical Record</a>
+        <a href="examine_details.html">View Patient Examine Details</a>
+    </nav>
+
+    <div class="container">
+        <h2>Register Hospital</h2>
+        <form id="hospitalForm">
+            <div class="form-group">
+                <label for="hospitalId">Hospital ID:</label>
+                <input type="number" id="hospitalId" required>
+            </div>
+            <div class="form-group">
+                <label for="hospitalName">Name:</label>
+                <input type="text" id="hospitalName" required>
+            </div>
+            <div class="form-group">
+                <label for="hospitalAddress">Address:</label>
+                <input type="text" id="hospitalAddress" required>
+            </div>
+            <div class="form-group">
+                <label for="hospitalSpecialization">Specialization:</label>
+                <input type="text" id="hospitalSpecialization" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('hospitalForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('hospitalId').value;
+            const name = document.getElementById('hospitalName').value;
+            const address = document.getElementById('hospitalAddress').value;
+            const specialization = document.getElementById('hospitalSpecialization').value;
+
+            try {
+                const accounts = await web3.eth.getAccounts();
+                await hospitalContract.methods.store_hospital_details(id, name, address, specialization).send({ from: accounts[0], gas: 500000 });
+                document.getElementById('status').innerText = 'Hospital registered successfully!';
+                document.getElementById('hospitalForm').reset();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('status').innerText = 'Error registering hospital. Check console.';
+            }
+        });
+    </script>
+
+</body>
+</html>

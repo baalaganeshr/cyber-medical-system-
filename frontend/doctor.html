@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.8/dist/web3.js"></script>
+    <script src="web3-config.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Cyber Medical System</h1>
+    </header>
+
+    <nav>
+        <a href="hospital.html">Hospital Registration</a>
+        <a href="doctor.html">Doctor Registration</a>
+        <a href="patient.html">Patient Registration</a>
+        <a href="patient_details.html">View Patient Details</a>
+        <a href="record_details.html">View Medical Record</a>
+        <a href="examine_details.html">View Patient Examine Details</a>
+    </nav>
+
+    <div class="container">
+        <h2>Register Doctor</h2>
+        <form id="doctorForm">
+            <div class="form-group">
+                <label for="doctorId">Doctor ID:</label>
+                <input type="number" id="doctorId" required>
+            </div>
+            <div class="form-group">
+                <label for="doctorName">Name:</label>
+                <input type="text" id="doctorName" required>
+            </div>
+            <div class="form-group">
+                <label for="doctorSpecialization">Specialization:</label>
+                <input type="text" id="doctorSpecialization" required>
+            </div>
+            <div class="form-group">
+                <label for="doctorPhone">Phone:</label>
+                <input type="text" id="doctorPhone" required>
+            </div>
+            <div class="form-group">
+                <label for="doctorAddress">Address:</label>
+                <input type="text" id="doctorAddress" required>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        document.getElementById('doctorForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('doctorId').value;
+            const name = document.getElementById('doctorName').value;
+            const specialization = document.getElementById('doctorSpecialization').value;
+            const phone = document.getElementById('doctorPhone').value;
+            const address = document.getElementById('doctorAddress').value;
+
+            try {
+                const accounts = await web3.eth.getAccounts();
+                await doctorContract.methods.store_doctor_details(id, name, specialization, phone, address).send({ from: accounts[0], gas: 500000 });
+                document.getElementById('status').innerText = 'Doctor registered successfully!';
+                document.getElementById('doctorForm').reset();
+            } catch (error) {
+                console.error(error);
+                document.getElementById('status').innerText = 'Error registering doctor. Check console.';
+            }
+        });
+    </script>
+
+</body>
+</html>

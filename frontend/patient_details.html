@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Patient Details</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.8/dist/web3.js"></script>
+    <script src="web3-config.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Cyber Medical System</h1>
+    </header>
+
+    <nav>
+        <a href="hospital.html">Hospital Registration</a>
+        <a href="doctor.html">Doctor Registration</a>
+        <a href="patient.html">Patient Registration</a>
+        <a href="patient_details.html">View Patient Details</a>
+        <a href="record_details.html">View Medical Record</a>
+        <a href="examine_details.html">View Patient Examine Details</a>
+    </nav>
+
+    <div class="container">
+        <h2>Retrieve Patient Details</h2>
+        <div class="form-group">
+            <label for="searchId">Patient ID:</label>
+            <input type="number" id="searchId" required>
+        </div>
+        <button onclick="getPatientDetails()">Get Details</button>
+
+        <div id="patientInfo" style="margin-top: 20px;">
+            <h3>Patient Information</h3>
+            <p><strong>Name:</strong> <span id="pName"></span></p>
+            <p><strong>Age:</strong> <span id="pAge"></span></p>
+            <p><strong>Gender:</strong> <span id="pGender"></span></p>
+            <p><strong>Height:</strong> <span id="pHeight"></span></p>
+            <p><strong>Weight:</strong> <span id="pWeight"></span></p>
+            <p><strong>Address:</strong> <span id="pAddress"></span></p>
+            <p><strong>Phone:</strong> <span id="pPhone"></span></p>
+            <p><strong>Email:</strong> <span id="pEmail"></span></p>
+            <p><strong>Date:</strong> <span id="pDate"></span></p>
+        </div>
+
+        <div id="attendantInfo" style="margin-top: 20px;">
+            <h3>Attendant Information</h3>
+            <p><strong>Name:</strong> <span id="aName"></span></p>
+            <p><strong>Relation:</strong> <span id="aRelation"></span></p>
+            <p><strong>Phone:</strong> <span id="aPhone"></span></p>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function getPatientDetails() {
+            const id = document.getElementById('searchId').value;
+            if (!id) {
+                alert("Please enter a Patient ID");
+                return;
+            }
+
+            try {
+                // Fetch Patient Details
+                const patientData = await patientContract.methods.retrieve_patient_details(id).call();
+                document.getElementById('pName').innerText = patientData[0];
+                document.getElementById('pAge').innerText = patientData[1];
+                document.getElementById('pGender').innerText = patientData[2];
+                document.getElementById('pHeight').innerText = patientData[3];
+                document.getElementById('pWeight').innerText = patientData[4];
+                document.getElementById('pAddress').innerText = patientData[5];
+                document.getElementById('pPhone').innerText = patientData[6];
+                document.getElementById('pEmail').innerText = patientData[7];
+                document.getElementById('pDate').innerText = patientData[8];
+
+                // Fetch Attendant Details
+                const attendantData = await patientContract.methods.retrieve_attendant_details(id).call();
+                document.getElementById('aName').innerText = attendantData[0];
+                document.getElementById('aRelation').innerText = attendantData[1];
+                document.getElementById('aPhone').innerText = attendantData[2];
+
+                document.getElementById('status').innerText = 'Data retrieved successfully';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('status').innerText = 'Error retrieving data. Check console.';
+            }
+        }
+    </script>
+
+</body>
+</html>

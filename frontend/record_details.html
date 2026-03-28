@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Medical Record</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.8/dist/web3.js"></script>
+    <script src="web3-config.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Cyber Medical System</h1>
+    </header>
+
+    <nav>
+        <a href="hospital.html">Hospital Registration</a>
+        <a href="doctor.html">Doctor Registration</a>
+        <a href="patient.html">Patient Registration</a>
+        <a href="patient_details.html">View Patient Details</a>
+        <a href="record_details.html">View Medical Record</a>
+        <a href="examine_details.html">View Patient Examine Details</a>
+    </nav>
+
+    <div class="container">
+        <h2>Retrieve Medical Record</h2>
+        
+        <!-- Optional: Add form to add record if needed, but prompt focused on display -->
+        
+        <div class="form-group">
+            <label for="recordId">Record ID:</label>
+            <input type="number" id="recordId" required>
+        </div>
+        <button onclick="getMedicalRecord()">Get Record</button>
+
+        <div id="recordInfo" style="margin-top: 20px;">
+            <h3>Medical Record Details</h3>
+            <p><strong>Patient ID:</strong> <span id="rPatientId"></span></p>
+            <p><strong>Diagnosis:</strong> <span id="rDiagnosis"></span></p>
+            <p><strong>Prescription:</strong> <span id="rPrescription"></span></p>
+            <p><strong>Treatment:</strong> <span id="rTreatment"></span></p>
+            <p><strong>Date:</strong> <span id="rDate"></span></p>
+        </div>
+        
+        <div id="insuranceInfo" style="margin-top: 20px;">
+            <h3>Insurance Details</h3>
+            <p><strong>Policy Number:</strong> <span id="iPolicyNumber"></span></p>
+            <p><strong>Insurer:</strong> <span id="iInsurer"></span></p>
+            <p><strong>Policy Type:</strong> <span id="iPolicyType"></span></p>
+            <p><strong>Policy Limit:</strong> <span id="iPolicyLimit"></span></p>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function getMedicalRecord() {
+            const id = document.getElementById('recordId').value;
+            if (!id) {
+                alert("Please enter a Record ID");
+                return;
+            }
+
+            try {
+                // Fetch Record Details
+                const recordData = await medicalRecordContract.methods.retrieve_record(id).call();
+                document.getElementById('rPatientId').innerText = recordData[0];
+                document.getElementById('rDiagnosis').innerText = recordData[1];
+                document.getElementById('rPrescription').innerText = recordData[2];
+                document.getElementById('rTreatment').innerText = recordData[3];
+                document.getElementById('rDate').innerText = recordData[4];
+
+                // Fetch Insurance Details
+                const insuranceData = await medicalRecordContract.methods.retrieve_insurance_details(id).call();
+                document.getElementById('iPolicyNumber').innerText = insuranceData[0];
+                document.getElementById('iInsurer').innerText = insuranceData[1];
+                document.getElementById('iPolicyType').innerText = insuranceData[2];
+                document.getElementById('iPolicyLimit').innerText = insuranceData[3];
+
+                document.getElementById('status').innerText = 'Record retrieved successfully';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('status').innerText = 'Error retrieving record. Check console.';
+            }
+        }
+    </script>
+
+</body>
+</html>

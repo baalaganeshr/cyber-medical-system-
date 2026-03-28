@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Patient Examination Details</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.2.8/dist/web3.js"></script>
+    <script src="web3-config.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Cyber Medical System</h1>
+    </header>
+
+    <nav>
+        <a href="hospital.html">Hospital Registration</a>
+        <a href="doctor.html">Doctor Registration</a>
+        <a href="patient.html">Patient Registration</a>
+        <a href="patient_details.html">View Patient Details</a>
+        <a href="record_details.html">View Medical Record</a>
+        <a href="examine_details.html">View Patient Examine Details</a>
+    </nav>
+
+    <div class="container">
+        <h2>Retrieve Examination & Investigation Details</h2>
+        <div class="form-group">
+            <label for="examRecordId">Record ID:</label>
+            <input type="number" id="examRecordId" required>
+        </div>
+        <button onclick="getExaminationDetails()">Get Details</button>
+
+        <div id="investigationInfo" style="margin-top: 20px;">
+            <h3>Investigation Results</h3>
+            <p><strong>Blood Test:</strong> <span id="invBlood"></span></p>
+            <p><strong>Urine Test:</strong> <span id="invUrine"></span></p>
+            <p><strong>ECG:</strong> <span id="invECG"></span></p>
+            <p><strong>MRI:</strong> <span id="invMRI"></span></p>
+            <p><strong>CT Scan:</strong> <span id="invCT"></span></p>
+            <p><strong>X-Ray:</strong> <span id="invXray"></span></p>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function getExaminationDetails() {
+            const id = document.getElementById('examRecordId').value;
+            if (!id) {
+                alert("Please enter a Record ID");
+                return;
+            }
+
+            try {
+                // Fetch Investigation Details
+                const invData = await medicalRecordContract.methods.retrieve_investigation_details(id).call();
+                document.getElementById('invBlood').innerText = invData[0];
+                document.getElementById('invUrine').innerText = invData[1];
+                document.getElementById('invECG').innerText = invData[2];
+                document.getElementById('invMRI').innerText = invData[3];
+                document.getElementById('invCT').innerText = invData[4];
+                document.getElementById('invXray').innerText = invData[5];
+
+                document.getElementById('status').innerText = 'Examination details retrieved successfully';
+            } catch (error) {
+                console.error(error);
+                document.getElementById('status').innerText = 'Error retrieving details. Check console.';
+            }
+        }
+    </script>
+
+</body>
+</html>
